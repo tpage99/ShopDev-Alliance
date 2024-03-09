@@ -11,7 +11,7 @@ export default function Homepage() {
     <div className="home">
       <h1>Shopify Developer Freelance Community</h1>
       <p>Battling a constantly evolving world in web development, scope creep, and building a business can get lonely.</p>
-      <h2><em>You may be building solo, but you don't to do it alone.</em></h2>
+      <h2><em>You may be building solo, but you don't have to do it alone.</em></h2>
       <p>That's why we formed the ShopDev Alliance. A paid Slack community to learn and grow with other freelancers operating in the same space.</p>
       <h2>We're not each other's competition, we're part of the <em>Alliance</em>.</h2>
       <h3>But why a <em>paid</em> Slack community?</h3>
