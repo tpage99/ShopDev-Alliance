@@ -1,151 +1,35 @@
-import {defer} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link} from '@remix-run/react';
-import {Suspense} from 'react';
-import {Image, Money} from '@shopify/hydrogen';
-
 /**
  * @type {MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'ShopDev Alliance'}];
 };
-
-/**
- * @param {LoaderFunctionArgs}
- */
-export async function loader({context}) {
-  const {storefront} = context;
-  const {collections} = await storefront.query(FEATURED_COLLECTION_QUERY);
-  const featuredCollection = collections.nodes[0];
-
-  return defer({featuredCollection});
-}
 
 export default function Homepage() {
   /** @type {LoaderReturnData} */
-  const data = useLoaderData();
   return (
     <div className="home">
-      <FeaturedCollection collection={data.featuredCollection} />
+      <h1>Shopify Developer Freelance Community</h1>
+      <p>Battling a constantly evolving world in web development, scope creep, and building a business can get lonely.</p>
+      <h2><em>You may be building solo, but you don't to do it alone.</em></h2>
+      <p>That's why we formed the ShopDev Alliance. A paid Slack community to learn and grow with other freelancers operating in the same space.</p>
+      <h2>We're not each other's competition, we're part of the <em>Alliance</em>.</h2>
+      <h3>But why a <em>paid</em> Slack community?</h3>
+      <p>There are already loads of great free Slack and Discord communities out there. Spam and someone trying to sell you their Saas or join their partner program is rampant. A paid community allows us to take advantage of an ongoing record to reference for later and ensures we can provide moderation within our community.</p>
+      <h3>What all is included?</h3>
+      <p>Your paid membership to the ShopDev Alliance gives you:</p>
+      <ul>
+          <li>Pro Slack membership so we can maintain a history of great content</li>
+          <li>Moderators who enforce a code of conduct</li>
+          <li>Once a month webinar for freelance topics</li>
+          <li>High-qualty engagement from other successful freelancers</li>
+          <li>A community full of members who can directly relate to you</li>
+        </ul>
+      <h2>Pricing</h2>
+      <p>Membership to the ShopDev Alliance is $25/month or $250/year (2 months free 🚀)</p>
     </div>
   );
 }
-
-/**
- * @param {{
- *   collection: FeaturedCollectionFragment;
- * }}
- */
-function FeaturedCollection({collection}) {
-  if (!collection) return null;
-  const image = collection?.image;
-  return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
-      )}
-      <h1>{collection.title}</h1>
-    </Link>
-  );
-}
-
-/**
- * @param {{
- *   products: Promise<RecommendedProductsQuery>;
- * }}
- */
-function RecommendedProducts({products}) {
-  return (
-    <div className="recommended-products">
-      <h2>Recommended Products</h2>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {({products}) => (
-            <div className="recommended-products-grid">
-              {products.nodes.map((product) => (
-                <Link
-                  key={product.id}
-                  className="recommended-product"
-                  to={`/products/${product.handle}`}
-                >
-                  <Image
-                    data={product.images.nodes[0]}
-                    aspectRatio="1/1"
-                    sizes="(min-width: 45em) 20vw, 50vw"
-                  />
-                  <h4>{product.title}</h4>
-                  <small>
-                    <Money data={product.priceRange.minVariantPrice} />
-                  </small>
-                </Link>
-              ))}
-            </div>
-          )}
-        </Await>
-      </Suspense>
-      <br />
-    </div>
-  );
-}
-
-const FEATURED_COLLECTION_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
-    id
-    title
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-    handle
-  }
-  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...FeaturedCollection
-      }
-    }
-  }
-`;
-
-const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    images(first: 1) {
-      nodes {
-        id
-        url
-        altText
-        width
-        height
-      }
-    }
-  }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...RecommendedProduct
-      }
-    }
-  }
-`;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderFunctionArgs} LoaderFunctionArgs */
 /** @template T @typedef {import('@remix-run/react').MetaFunction<T>} MetaFunction */
